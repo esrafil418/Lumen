@@ -27,7 +27,11 @@ export default function BlogHeader() {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, fontWeight: 700 }}
+            sx={{
+              flexGrow: 1,
+              fontWeight: 700,
+              visibility: { xs: "hidden", sm: "visible" },
+            }}
           >
             My Blog
           </Typography>

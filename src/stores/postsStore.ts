@@ -34,7 +34,7 @@ export const usePostsStore = create<PostsStore>((set) => {
         const data = await res.json();
 
         set({
-          posts: data,
+          posts: data.posts,
           loading: false,
           error: null,
         });
