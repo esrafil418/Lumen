@@ -31,7 +31,7 @@ export default function BlogForm({ onSuccess, onCancel }: BlogFormProps) {
     title: "",
     content: "",
     category: "",
-    tags: ["react", "typescript", "next.js"],
+    tags: ["react", "typescript"],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -48,7 +48,7 @@ export default function BlogForm({ onSuccess, onCancel }: BlogFormProps) {
       title: "",
       content: "",
       category: "",
-      tags: ["react", "typescript", "next.js"],
+      tags: ["react", "typescript"],
     });
   };
 
@@ -116,17 +116,17 @@ export default function BlogForm({ onSuccess, onCancel }: BlogFormProps) {
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
             {onCancel && (
               <Button variant="outlined" color="inherit" onClick={onCancel}>
-                Cancel
+                Exit
               </Button>
             )}
             <Button variant="outlined" color="secondary">
-              Save Draft
+              Save
             </Button>
             <Button type="submit" variant="contained" color="primary">
-              Publish Post
+              Send
             </Button>
           </Box>
         </Stack>
