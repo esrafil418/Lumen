@@ -1,3 +1,4 @@
+import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
@@ -9,7 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 
-export default function BlogHeader() {
+interface BlogHeaderProps {
+  onNewPost?: () => void;
+}
+
+export default function BlogHeader({ onNewPost }: BlogHeaderProps) {
   return (
     <AppBar position="sticky" color="primary">
       <Container maxWidth="lg">
@@ -39,8 +44,18 @@ export default function BlogHeader() {
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button color="inherit">Home</Button>
             <Button color="inherit">About</Button>
-            <Button color="inherit" variant="outlined">
-              Login
+            <Button
+              color="inherit"
+              onClick={onNewPost}
+              startIcon={<AddIcon />}
+              sx={{ ml: 1 }}
+            >
+              <Box
+                component="span"
+                sx={{ display: { xs: "none", sm: "inline" } }}
+              >
+                New Post
+              </Box>
             </Button>
           </Box>
         </Toolbar>

@@ -21,7 +21,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(4),
 }));
 
-export default function BlogForm() {
+interface BlogFormProps {
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+export default function BlogForm({ onSuccess, onCancel }: BlogFormProps) {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -32,6 +37,19 @@ export default function BlogForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
+
+    // Close dialog after submission
+    if (onSuccess) {
+      onSuccess();
+    }
+
+    // Reset form
+    setFormData({
+      title: "",
+      content: "",
+      category: "",
+      tags: ["react", "typescript", "next.js"],
+    });
   };
 
   const handleInputChange = (
@@ -99,6 +117,11 @@ export default function BlogForm() {
           </Box>
 
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+            {onCancel && (
+              <Button variant="outlined" color="inherit" onClick={onCancel}>
+                Cancel
+              </Button>
+            )}
             <Button variant="outlined" color="secondary">
               Save Draft
             </Button>

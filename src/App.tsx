@@ -1,15 +1,18 @@
 import { Box, Container, Typography } from "@mui/material";
+import { useState } from "react";
 import BlogGrid from "./components/BlogGrid";
 import BlogHeader from "./components/BlogHeader";
+import CreatePostDialog from "./components/CreatePostDialog";
 
 export default function App() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <BlogHeader />
+      <BlogHeader onNewPost={() => setDialogOpen(true)} />
 
       <Container component="main" sx={{ flex: 1, py: 4 }}>
         <BlogGrid />
-        {/* <BlogForm /> */}
       </Container>
 
       <Box
@@ -27,6 +30,11 @@ export default function App() {
           </Typography>
         </Container>
       </Box>
+
+      <CreatePostDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+      />
     </Box>
   );
 }
