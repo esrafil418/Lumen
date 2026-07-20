@@ -13,7 +13,6 @@ import {
 import type { Posts } from "../stores/postsStore";
 
 export default function BlogCard({
-  id,
   title,
   body,
   tags,
