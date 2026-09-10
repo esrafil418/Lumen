@@ -2,7 +2,7 @@
 
 A modern, responsive blog application built with React, TypeScript, and Material-UI (MUI). Features include a blog post grid, post creation dialog, and state management with Zustand.
 
-**Live Demo:** [blog-app](https://blog-app-with-mui.surge.sh/)
+**Live Demo:** [blog-app](https://blog-mui-future-ray.surge.sh/)
 
 ## ✨ Features
 
