@@ -1,36 +1,119 @@
-import { Container, Grid, Typography } from "@mui/material";
-import { useEffect } from "react";
+import {
+  Box,
+  Chip,
+  Container,
+  Grid,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useMemo, useState } from "react";
 import { usePostsStore } from "../stores/postsStore";
 import BlogCard from "./BlogCard";
+import Hero from "./Hero";
 
 export default function BlogGrid() {
-  const { posts, loading, error, fetchPosts } = usePostsStore();
+  const { posts, loading, error } = usePostsStore();
+  const [query, setQuery] = useState("");
+  const [activeTag, setActiveTag] = useState("all");
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+  const tags = useMemo(() => {
+    const unique = new Set<string>();
+    posts.forEach((post) => post.tags.forEach((tag) => unique.add(tag)));
+    return ["all", ...Array.from(unique).sort()];
+  }, [posts]);
+
+  const filtered = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesTag = activeTag === "all" || post.tags.includes(activeTag);
+      const haystack = `${post.title} ${post.body}`.toLowerCase();
+      const matchesQuery = haystack.includes(query.trim().toLowerCase());
+      return matchesTag && matchesQuery;
+    });
+  }, [posts, activeTag, query]);
 
   if (loading) {
-    return <p>Loading Posts...</p>;
+    return (
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Skeleton variant="rounded" height={420} sx={{ mb: 4 }} />
+        <Grid container spacing={3}>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
+              <Skeleton variant="rounded" height={360} />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    );
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <Container maxWidth="sm" sx={{ py: 10, textAlign: "center" }}>
+        <Typography variant="h5" gutterBottom>
+          Couldn’t load stories
+        </Typography>
+        <Typography color="text.secondary">{error}</Typography>
+      </Container>
+    );
   }
 
-  return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
-        Latest Posts
-      </Typography>
+  const [featured, ...rest] = posts;
+  const gridPosts = query || activeTag !== "all" ? filtered : rest;
 
-      <Grid container spacing={4}>
-        {posts.map((post) => (
-          <Grid key={post.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <BlogCard {...post} />
+  return (
+    <Box>
+      {featured && !query && activeTag === "all" ? <Hero post={featured} /> : null}
+
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={2}
+          sx={{ mb: 3, justifyContent: "space-between", alignItems: { md: "center" } }}
+        >
+          <Box>
+            <Typography variant="h4" component="h2">
+              Latest stories
+            </Typography>
+            <Typography color="text.secondary">
+              Essays, mysteries, and notes from the archive.
+            </Typography>
+          </Box>
+          <TextField
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search titles and excerpts"
+            size="small"
+            sx={{ minWidth: { md: 280 } }}
+          />
+        </Stack>
+
+        <Stack direction="row" spacing={1} useFlexGap sx={{ mb: 4, flexWrap: "wrap" }}>
+          {tags.map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              clickable
+              color={activeTag === tag ? "secondary" : "default"}
+              variant={activeTag === tag ? "filled" : "outlined"}
+              onClick={() => setActiveTag(tag)}
+            />
+          ))}
+        </Stack>
+
+        {gridPosts.length === 0 ? (
+          <Typography color="text.secondary">No stories match that filter.</Typography>
+        ) : (
+          <Grid container spacing={3}>
+            {gridPosts.map((post) => (
+              <Grid key={post.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <BlogCard {...post} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-    </Container>
+        )}
+      </Container>
+    </Box>
   );
 }

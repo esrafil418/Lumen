@@ -12,9 +12,9 @@ export default function CreatePostDialog({
   onClose,
 }: CreatePostDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        Create New Post
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ fontFamily: '"Fraunces", Georgia, serif' }}>
+        Write a new story
         <IconButton
           onClick={onClose}
           sx={{ position: "absolute", right: 8, top: 8 }}
