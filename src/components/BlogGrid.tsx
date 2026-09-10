@@ -3,6 +3,7 @@ import {
   Chip,
   Container,
   Grid,
+  Pagination,
   Skeleton,
   Stack,
   TextField,
@@ -13,10 +14,13 @@ import { usePostsStore } from "../stores/postsStore";
 import BlogCard from "./BlogCard";
 import Hero from "./Hero";
 
+const PAGE_SIZE = 12;
+
 export default function BlogGrid() {
   const { posts, loading, error } = usePostsStore();
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState("all");
+  const [page, setPage] = useState(1);
 
   const tags = useMemo(() => {
     const unique = new Set<string>();
@@ -59,12 +63,21 @@ export default function BlogGrid() {
     );
   }
 
+  const browsingAll = !query && activeTag === "all";
   const [featured, ...rest] = posts;
-  const gridPosts = query || activeTag !== "all" ? filtered : rest;
+  const list = browsingAll ? rest : filtered;
+  const pageCount = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const gridPosts = list.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
 
   return (
     <Box>
-      {featured && !query && activeTag === "all" ? <Hero post={featured} /> : null}
+      {featured && browsingAll && currentPage === 1 ? (
+        <Hero post={featured} />
+      ) : null}
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
         <Stack
@@ -82,7 +95,10 @@ export default function BlogGrid() {
           </Box>
           <TextField
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setPage(1);
+            }}
             placeholder="Search titles and excerpts"
             size="small"
             sx={{ minWidth: { md: 280 } }}
@@ -97,7 +113,10 @@ export default function BlogGrid() {
               clickable
               color={activeTag === tag ? "secondary" : "default"}
               variant={activeTag === tag ? "filled" : "outlined"}
-              onClick={() => setActiveTag(tag)}
+              onClick={() => {
+                setActiveTag(tag);
+                setPage(1);
+              }}
             />
           ))}
         </Stack>
@@ -105,13 +124,28 @@ export default function BlogGrid() {
         {gridPosts.length === 0 ? (
           <Typography color="text.secondary">No stories match that filter.</Typography>
         ) : (
-          <Grid container spacing={3}>
-            {gridPosts.map((post) => (
-              <Grid key={post.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <BlogCard {...post} />
-              </Grid>
-            ))}
-          </Grid>
+          <>
+            <Grid container spacing={3}>
+              {gridPosts.map((post) => (
+                <Grid key={post.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                  <BlogCard {...post} />
+                </Grid>
+              ))}
+            </Grid>
+            {pageCount > 1 ? (
+              <Stack sx={{ mt: 5, alignItems: "center" }}>
+                <Pagination
+                  count={pageCount}
+                  page={currentPage}
+                  color="secondary"
+                  onChange={(_event, nextPage) => {
+                    setPage(nextPage);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                />
+              </Stack>
+            ) : null}
+          </>
         )}
       </Container>
     </Box>
