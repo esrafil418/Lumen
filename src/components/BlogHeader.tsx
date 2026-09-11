@@ -39,10 +39,10 @@ export default function BlogHeader({ onNewPost }: BlogHeaderProps) {
       sx={{
         borderBottom: "1px solid",
         borderColor: "divider",
-        bgcolor: "rgba(246, 241, 234, 0.72)",
+        bgcolor: "rgba(222, 214, 204, 0.88)",
         backdropFilter: "blur(16px)",
         "[data-mui-color-scheme='dark'] &": {
-          bgcolor: "rgba(18, 16, 14, 0.72)",
+          bgcolor: "rgba(10, 9, 8, 0.88)",
         },
       }}
     >
